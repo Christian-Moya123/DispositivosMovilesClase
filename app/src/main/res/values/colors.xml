@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="low_gray">#ACACAC</color>
+    <color name="fuxia_cancel">#F77293</color>
+    <color name="caca">#734B30</color>
+    <color name="dm">#FC0A3336</color>
+    <color name="title_color_dm">#fdffff</color>
+    <color name="blue_acept">#48AEF1</color>
+    <color name="fondo">#024673</color>
+    <color name="naranja">#F44D18</color>
+    <color name="blanco">#FFFFFF</color>
+    <color name="rojo">#FA0404</color>
+    <color name="rojoBoton">#F85252</color>
+    <color name="azulTwiter">#06DAF6</color>
+    <color name="azulFace">#063AF6</color>
+
+
+
+</resources>
