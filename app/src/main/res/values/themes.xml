@@ -7,8 +7,8 @@
 
     <style name="Theme.DispositivosMoviles" parent="Base.Theme.DispositivosMoviles">
         <item name="android:fontFamily">@font/ibm_plex_mono_semibold </item>
-        <item name="android:backgroundTint">@color/dm</item> -->
-         <item name="android:textColor">@color/fuxia_cancel</item>
+        <!--  <item name="android:backgroundTint">@color/dm</item> -->
+        <!--  <item name="android:textColor">@color/fuxia_cancel</item>-->
          <item name="android:textSize">14sp</item>
 
      </style>
@@ -70,7 +70,7 @@
          <item name="android:backgroundTint"> @color/azulTwiter</item>
          <item name="android:textSize"> 12sp</item>
          <item name="cornerRadius"> 8dp</item>
-         <item name="android:layout_width"> 120dp</item>
+         <item name="android:layout_width"> 125dp</item>
          <item name="android:layout_height"> 50dp</item>
 
 

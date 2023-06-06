@@ -19,12 +19,12 @@
         />
 
         <activity
-            android:name=".ui.activities.activities2.login"
+            android:name=".ui.activities.activities2.MainActivity"
             android:exported="false"
             />
 
         <activity
-            android:name=".ui.activities.activities2.MainActivity"
+            android:name=".ui.activities.activities2.login"
             android:exported="true"
             >
             <intent-filter>

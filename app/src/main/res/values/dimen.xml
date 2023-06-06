@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="grande">150dp</dimen>
+    <dimen name="marginStartEnd">30</dimen>
+    <dimen name="marginStartStart">30</dimen>
+</resources>

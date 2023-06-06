@@ -43,7 +43,7 @@ class SecondActivity : AppCompatActivity() {
            // binding.textView2S.text ="el codigo esta correctamente"
 
             var intent = Intent(
-                this, MainActivity::class.java
+                this, login::class.java
             )
 
             startActivity(intent)
