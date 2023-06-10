@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/InicioMenu"
+        android:id="@+id/inicio"
+        android:enabled="true"
+        android:visible="true"
+        android:icon="@drawable/home_48px" />
+
+    <item android:title="@string/FavoritosMenu"
+        android:id="@+id/fav"
+        android:enabled="true"
+        android:visible="true"
+        android:icon="@drawable/star_half_48px"/>
+
+    <item android:title="@string/AppMenu"
+        android:id="@+id/chat_got"
+        android:enabled="true"
+        android:visible="true"
+        android:icon="@drawable/settings_48px"/>
+
+</menu>

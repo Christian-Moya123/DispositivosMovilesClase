@@ -26,10 +26,17 @@ class SecondActivity : AppCompatActivity() {
         //Log.d("uce", "entrando a Start")
         //init_Class()
         var name: String = " ";
-        intent.extras.let {
 
-            name =it?.getString("var1")!!
-        }
+
+        //POR EL MOMENTO COMENTADO///////////////////////////
+        //intent.extras.let {
+
+         //   name =it?.getString("var1")!!
+        //}
+        ////////////////////////////////////////////////////////////
+
+
+
        // binding.textView2S.text = "Que mas ve "+name
         Log.d("uce","Hola ${name}")
         binding.textView2S.text = "Bienvenido " + name
@@ -64,6 +71,45 @@ class SecondActivity : AppCompatActivity() {
 
 
             f.setBackgroundTint(getColor(R.color.naranja)).show()*/
+        }
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.inicio -> {
+
+                    var suma :Int= 0
+                    for(i in listOf(1,2,3)){
+                        suma = suma+i
+                    }
+
+                    // Respond to navigation item 1 click
+                    Snackbar.make(
+                        binding.textView2S, "ENTRAMOS A INICIO ${suma}",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    true
+                }
+                R.id.fav -> {
+
+                    var suma :Int= 0
+                    for(i in listOf(8,12,13)){
+                        suma +=i
+                    }
+
+                    // Respond to navigation item 1 click
+                    Snackbar.make(
+                        binding.textView2S, "ENTRAMOS A INICIO ${suma}",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    true
+                }
+
+                R.id.chat_got -> {
+                    // Respond to navigation item 2 click
+                    true
+                }
+                else -> false
+            }
         }
     }
 }
