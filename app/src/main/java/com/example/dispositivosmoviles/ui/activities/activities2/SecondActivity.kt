@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.databinding.ActivitySecondBinding
+import com.example.dispositivosmoviles.ui.activities.fragment.FirstFragment
+import com.example.dispositivosmoviles.ui.activities.fragment.SecondFragment
 import com.google.android.material.snackbar.Snackbar
 
 class SecondActivity : AppCompatActivity() {
@@ -76,17 +78,11 @@ class SecondActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.inicio -> {
-
-                    var suma :Int= 0
-                    for(i in listOf(1,2,3)){
-                        suma = suma+i
-                    }
-
-                    // Respond to navigation item 1 click
-                    Snackbar.make(
-                        binding.textView2S, "ENTRAMOS A INICIO ${suma}",
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    val frag = FirstFragment()
+                    val transacction = supportFragmentManager.beginTransaction()
+                    transacction.replace(binding.frmContainer.id, frag)
+                    transacction.addToBackStack(null)//para crear una pila de navegacion
+                    transacction.commit()
                     true
                 }
                 R.id.fav -> {
@@ -105,7 +101,11 @@ class SecondActivity : AppCompatActivity() {
                 }
 
                 R.id.chat_got -> {
-                    // Respond to navigation item 2 click
+                    val frag = SecondFragment()
+                    val transacction = supportFragmentManager.beginTransaction()
+                    transacction.replace(binding.frmContainer2.id, frag)
+                    transacction.addToBackStack(null)//para crear una pila de navegacion
+                    transacction.commit()
                     true
                 }
                 else -> false
