@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 
 import com.example.dispositivosmoviles.R
@@ -30,5 +32,19 @@ class FirstFragment : Fragment() {
         // Inflate the layout for this fragment
         return binding.root
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        val names = arrayListOf<String>("carlos, valadimir",
+            "andres","pepe", "mario","rosa")
+
+        val adapter = ArrayAdapter<String>(requireActivity(), R.layout.simple_layout,names )
+
+        binding.spinner.adapter = adapter
+        binding.listView.adapter = adapter
+    }
+
+
 
 }

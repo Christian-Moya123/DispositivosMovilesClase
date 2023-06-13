@@ -8,6 +8,7 @@ import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.databinding.ActivitySecondBinding
 import com.example.dispositivosmoviles.ui.activities.fragment.FirstFragment
 import com.example.dispositivosmoviles.ui.activities.fragment.SecondFragment
+import com.example.dispositivosmoviles.ui.activities.utilities.FragmentsManager
 import com.google.android.material.snackbar.Snackbar
 
 class SecondActivity : AppCompatActivity() {
@@ -78,11 +79,12 @@ class SecondActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.inicio -> {
-                    val frag = FirstFragment()
-                    val transacction = supportFragmentManager.beginTransaction()
-                    transacction.replace(binding.frmContainer.id, frag)
-                    transacction.addToBackStack(null)//para crear una pila de navegacion
-                    transacction.commit()
+                    FragmentsManager().replaceFrangment(
+                        supportFragmentManager,
+                        binding.frmContainer.id,
+                        FirstFragment()
+                    )
+
                     true
                 }
                 R.id.fav -> {
@@ -111,5 +113,9 @@ class SecondActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 }
