@@ -42,7 +42,7 @@ class FirstFragment : Fragment() {
         val adapter = ArrayAdapter<String>(requireActivity(), R.layout.simple_layout,names )
 
         binding.spinner.adapter = adapter
-        binding.listView.adapter = adapter
+       //binding.listView.adapter = adapter
     }
 
 
