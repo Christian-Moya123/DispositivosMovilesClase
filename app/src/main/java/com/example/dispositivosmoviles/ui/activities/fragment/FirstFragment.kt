@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.Adapter
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.example.dispositivosmoviles.R
+import com.example.dispositivosmoviles.data.ListMarvel
 import com.example.dispositivosmoviles.databinding.FragmentFirstBinding
+import com.example.dispositivosmoviles.ui.adapters.MarvelAdapter
 
 /**
  * A simple [Fragment] subclass.
@@ -18,33 +21,73 @@ import com.example.dispositivosmoviles.databinding.FragmentFirstBinding
  */
 class FirstFragment : Fragment() {
 
+/*
     private  lateinit var binding : FragmentFirstBinding
+
+        override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+
+            binding = FragmentFirstBinding.inflate(layoutInflater,
+                container,
+                false)
+
+            // Inflate the layout for this fragment
+            return binding.root
+        }
+
+        override fun onStart() {
+            super.onStart()
+
+            val names = arrayListOf<String>("carlos, valadimir",
+                "andres","pepe", "mario","rosa")
+
+            val adapter = ArrayAdapter<String>(requireActivity(), R.layout.simple_layout,names )
+
+            binding.spinner.adapter = adapter
+            //binding.listView.adapter = adapter
+        }
+
+         */
+private lateinit var binding: FragmentFirstBinding;
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        binding = FragmentFirstBinding.inflate(layoutInflater,
-            container,
-            false)
-
         // Inflate the layout for this fragment
+
+        binding = FragmentFirstBinding.inflate(
+            inflater, container, false
+        )
         return binding.root
+
     }
 
     override fun onStart() {
-        super.onStart()
+        super.onStart();
 
-        val names = arrayListOf<String>("carlos, valadimir",
-            "andres","pepe", "mario","rosa")
+        val names = arrayListOf<String>("A", "B", "C", "D", "E")
 
-        val adapter = ArrayAdapter<String>(requireActivity(), R.layout.simple_layout,names )
+        val adapter = ArrayAdapter<String>(
+            requireActivity(),
+            android.R.layout.simple_spinner_item,
+            names
+        )
 
         binding.spinner.adapter = adapter
-       //binding.listView.adapter = adapter
+
+        val rvAdapter = MarvelAdapter(ListMarvel().retunrItems());
+        var rvMarvel = binding.rvMarvelChart;
+        rvMarvel.adapter = rvAdapter;
+        rvMarvel.layoutManager =
+            LinearLayoutManager(
+                requireActivity(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+
     }
-
-
 
 }

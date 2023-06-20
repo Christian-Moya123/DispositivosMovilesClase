@@ -16,7 +16,7 @@ import com.example.dispositivosmoviles.databinding.FragmentSecondBinding
  */
 class SecondFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private  lateinit var binding : FragmentSecondBinding
+   private  lateinit var binding : FragmentSecondBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,5 +30,9 @@ class SecondFragment : Fragment() {
         // Inflate the layout for this fragment
         return binding.root
     }
+
+
+
+
 
 }
