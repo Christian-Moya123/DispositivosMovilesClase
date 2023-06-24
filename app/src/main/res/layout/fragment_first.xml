@@ -78,6 +78,11 @@
                 android:orientation="horizontal">
 
 
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/reSwipe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvMarvelChart"
                     android:layout_width="match_parent"
@@ -87,6 +92,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="1.0" />
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             </LinearLayout>
 

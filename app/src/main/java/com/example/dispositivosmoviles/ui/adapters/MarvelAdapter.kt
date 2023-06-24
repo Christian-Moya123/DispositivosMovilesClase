@@ -10,7 +10,9 @@ import com.example.dispositivosmoviles.ui.activities.entity.LoginMarvel
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
-class MarvelAdapter (private val items: List<LoginMarvel>): RecyclerView.Adapter<MarvelAdapter.MarlverViewHolder>() {
+class MarvelAdapter (private val items: List<LoginMarvel>,
+                     private var fnClick: (LoginMarvel) -> Unit
+): RecyclerView.Adapter<MarvelAdapter.MarlverViewHolder>() {
 
 
 
@@ -18,16 +20,21 @@ class MarvelAdapter (private val items: List<LoginMarvel>): RecyclerView.Adapter
 
         private val binding : MarvelCharacterssBinding = MarvelCharacterssBinding.bind(view)
 
-        fun render(item : LoginMarvel){
+        fun render(item : LoginMarvel, fnClick: (LoginMarvel) -> Unit){
             println("recibiendo a ${item.name}")
             binding.txtName.text = item.name
             binding.txtComic.text = item.comic
+
             Picasso.get().load(item.imagenes).into(binding.imgMarvel)
-            binding.imgMarvel.setOnClickListener{
-                Snackbar.make(binding.imgMarvel,
-                item.name,
-                Snackbar.LENGTH_SHORT).show()
+
+            itemView.setOnClickListener{
+                fnClick(item)
             }
+
+
+
+                //Snackbar.make(binding.imgMarvel, item.name, Snackbar.LENGTH_SHORT).show()
+
         }
 
     }
@@ -46,7 +53,7 @@ class MarvelAdapter (private val items: List<LoginMarvel>): RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: MarvelAdapter.MarlverViewHolder, position: Int) {
-        holder.render(items[position])
+        holder.render(items[position], fnClick)
     }
 
     override fun getItemCount(): Int =  items.size

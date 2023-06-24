@@ -1,5 +1,6 @@
 package com.example.dispositivosmoviles.ui.activities.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.data.ListMarvel
 import com.example.dispositivosmoviles.databinding.FragmentFirstBinding
+import com.example.dispositivosmoviles.ui.activities.activities2.DetailsMarvelItem
+import com.example.dispositivosmoviles.ui.activities.activities2.MainActivity
+import com.example.dispositivosmoviles.ui.activities.entity.LoginMarvel
 import com.example.dispositivosmoviles.ui.adapters.MarvelAdapter
 
 /**
@@ -77,16 +81,39 @@ private lateinit var binding: FragmentFirstBinding;
         )
 
         binding.spinner.adapter = adapter
+        chargeDataRv()
 
-        val rvAdapter = MarvelAdapter(ListMarvel().retunrItems());
+        binding.reSwipe.setOnRefreshListener{
+            chargeDataRv()
+            binding.reSwipe.isRefreshing=false
+        }
+
+
+
+
+
+    }
+
+    fun sendMarvelItem(item:LoginMarvel ){
+        val i = Intent(requireActivity(), DetailsMarvelItem::class.java)
+        i.putExtra("name",item)
+        startActivity(i)
+    }
+
+    fun chargeDataRv(){
+        val rvAdapter = MarvelAdapter(
+            ListMarvel().retunrItems()
+        ) {sendMarvelItem(it)};
         var rvMarvel = binding.rvMarvelChart;
-        rvMarvel.adapter = rvAdapter;
-        rvMarvel.layoutManager =
-            LinearLayoutManager(
+
+        with(rvMarvel){
+            this.adapter = rvAdapter
+            this.layoutManager= LinearLayoutManager(
                 requireActivity(),
                 LinearLayoutManager.HORIZONTAL,
                 false
             )
+        }
 
     }
 
