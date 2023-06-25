@@ -8,15 +8,20 @@ import android.view.ViewGroup
 import android.widget.Adapter
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.data.ListMarvel
 import com.example.dispositivosmoviles.databinding.FragmentFirstBinding
+import com.example.dispositivosmoviles.logic.jkanLogic.JikanLogic
 import com.example.dispositivosmoviles.ui.activities.activities2.DetailsMarvelItem
 import com.example.dispositivosmoviles.ui.activities.activities2.MainActivity
 import com.example.dispositivosmoviles.ui.activities.entity.LoginMarvel
 import com.example.dispositivosmoviles.ui.adapters.MarvelAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * A simple [Fragment] subclass.
@@ -101,19 +106,26 @@ private lateinit var binding: FragmentFirstBinding;
     }
 
     fun chargeDataRv(){
-        val rvAdapter = MarvelAdapter(
-            ListMarvel().retunrItems()
-        ) {sendMarvelItem(it)};
-        var rvMarvel = binding.rvMarvelChart;
+        lifecycleScope.launch(Dispatchers.IO){
+            val rvAdapter = MarvelAdapter(
+                JikanLogic().getAllAnimes()
 
-        with(rvMarvel){
-            this.adapter = rvAdapter
-            this.layoutManager= LinearLayoutManager(
-                requireActivity(),
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
+            ) {sendMarvelItem(it)};
+
+            withContext(Dispatchers.Main){
+                with(binding.rvMarvelChart){
+                    this.adapter = rvAdapter
+                    this.layoutManager= LinearLayoutManager(
+                        requireActivity(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
+                }
+            }
+
         }
+
+
 
     }
 

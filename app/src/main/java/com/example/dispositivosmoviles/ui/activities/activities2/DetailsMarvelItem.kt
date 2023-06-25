@@ -35,6 +35,7 @@ class DetailsMarvelItem : AppCompatActivity() {
             binding.txtName.text = item.name
             binding.txtComic.text = item.comic
             Picasso.get().load(item.imagenes).into(binding.imgMarvel)
+
         }
 
     }
