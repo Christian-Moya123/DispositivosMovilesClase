@@ -1,6 +1,6 @@
 package com.example.dispositivosmoviles.validator
 
-import com.example.dispositivosmoviles.ui.activities.entity.LoginUser
+import com.example.dispositivosmoviles.ui.activities.entity.jkanmarvel.LoginUser
 
 class LoginValidation {
     fun checkLogin(name :String, password: String) :Boolean{

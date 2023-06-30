@@ -2,10 +2,8 @@ package com.example.dispositivosmoviles.ui.activities.activities2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.databinding.ActivityDetailsMarvelItemBinding
-import com.example.dispositivosmoviles.databinding.MarvelCharacterssBinding
-import com.example.dispositivosmoviles.ui.activities.entity.LoginMarvel
+import com.example.dispositivosmoviles.ui.activities.entity.jkanmarvel.LoginMarvel
 import com.squareup.picasso.Picasso
 
 class DetailsMarvelItem : AppCompatActivity() {

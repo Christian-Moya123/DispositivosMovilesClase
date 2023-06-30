@@ -1,7 +1,6 @@
 package com.example.dispositivosmoviles.data
 
-import com.example.dispositivosmoviles.ui.activities.entity.LoginMarvel
-import com.example.dispositivosmoviles.ui.activities.entity.LoginUser
+import com.example.dispositivosmoviles.ui.activities.entity.jkanmarvel.LoginMarvel
 
 class ListMarvel {
 

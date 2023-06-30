@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.databinding.MarvelCharacterssBinding
-import com.example.dispositivosmoviles.ui.activities.entity.LoginMarvel
-import com.google.android.material.snackbar.Snackbar
+import com.example.dispositivosmoviles.ui.activities.entity.jkanmarvel.LoginMarvel
 import com.squareup.picasso.Picasso
 
 class MarvelAdapter (private val items: List<LoginMarvel>,

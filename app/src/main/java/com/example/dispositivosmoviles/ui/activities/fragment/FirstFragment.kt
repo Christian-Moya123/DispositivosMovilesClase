@@ -5,19 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 
-import com.example.dispositivosmoviles.R
-import com.example.dispositivosmoviles.data.ListMarvel
 import com.example.dispositivosmoviles.databinding.FragmentFirstBinding
 import com.example.dispositivosmoviles.logic.jkanLogic.JikanLogic
+import com.example.dispositivosmoviles.logic.jkanLogic.MarvelLogic
 import com.example.dispositivosmoviles.ui.activities.activities2.DetailsMarvelItem
-import com.example.dispositivosmoviles.ui.activities.activities2.MainActivity
-import com.example.dispositivosmoviles.ui.activities.entity.LoginMarvel
+import com.example.dispositivosmoviles.ui.activities.entity.jkanmarvel.LoginMarvel
 import com.example.dispositivosmoviles.ui.adapters.MarvelAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -99,7 +96,7 @@ private lateinit var binding: FragmentFirstBinding;
 
     }
 
-    fun sendMarvelItem(item:LoginMarvel ){
+    fun sendMarvelItem(item: LoginMarvel){
         val i = Intent(requireActivity(), DetailsMarvelItem::class.java)
         i.putExtra("name",item)
         startActivity(i)
@@ -109,6 +106,8 @@ private lateinit var binding: FragmentFirstBinding;
         lifecycleScope.launch(Dispatchers.IO){
             val rvAdapter = MarvelAdapter(
                 JikanLogic().getAllAnimes()
+
+
 
             ) {sendMarvelItem(it)};
 
