@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 import com.example.dispositivosmoviles.databinding.FragmentFirstBinding
 import com.example.dispositivosmoviles.logic.jkanLogic.JikanLogic
@@ -26,6 +27,9 @@ import kotlinx.coroutines.withContext
  * create an instance of this fragment.
  */
 class FirstFragment : Fragment() {
+   // private  lateinit var binding : FragmentFirstBinding
+    private lateinit var lmanager : LinearLayoutManager
+    private  var  rvAdapter: MarvelAdapter = MarvelAdapter { sendMarvelItem(it) }
 
 /*
     private  lateinit var binding : FragmentFirstBinding
@@ -65,7 +69,13 @@ private lateinit var binding: FragmentFirstBinding;
         // Inflate the layout for this fragment
 
         binding = FragmentFirstBinding.inflate(
-            inflater, container, false
+            layoutInflater, container, false
+        )
+
+        lmanager = LinearLayoutManager(
+            requireActivity(),
+            LinearLayoutManager.VERTICAL,
+            false
         )
         return binding.root
 
@@ -83,12 +93,49 @@ private lateinit var binding: FragmentFirstBinding;
         )
 
         binding.spinner.adapter = adapter
-        chargeDataRv()
+        chargeDataRV("cap")
 
         binding.reSwipe.setOnRefreshListener{
-            chargeDataRv()
+            chargeDataRV("cap")
             binding.reSwipe.isRefreshing=false
         }
+
+        binding.rvMarvelChart.addOnScrollListener(
+            object  : RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if(dy>0){
+                        //elementos que tengo
+                        val v = lmanager.childCount
+                        //cual es mi posicion actual
+                        val p = lmanager.findFirstVisibleItemPosition()
+                        //cuantos elementos tengo en total
+                        val t = lmanager.itemCount
+
+                        if((v+p) >= t){
+                            lifecycleScope.launch(Dispatchers.IO){
+
+                                val newItems =JikanLogic().getAllAnimes()
+                               /* val newItems =  MarvelLogic().getCharactersMarvel(
+                                    name="spider",
+                                    limit=20)*/
+
+                                withContext(Dispatchers.Main){
+                                    rvAdapter.updateListitem(newItems)
+
+                                }
+
+
+                            }
+
+                    }
+
+
+
+                    }
+                }
+        })
 
 
 
@@ -102,28 +149,23 @@ private lateinit var binding: FragmentFirstBinding;
         startActivity(i)
     }
 
-    fun chargeDataRv(){
-        lifecycleScope.launch(Dispatchers.IO){
-            val rvAdapter = MarvelAdapter(
+    fun chargeDataRV(search:String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            rvAdapter.items =
                 JikanLogic().getAllAnimes()
 
+            /*            rvAdapter = MarvelAdapter(MarvelLogic().getMarvelChars(name=search, 20)) {
+                            sendMarvelItem(it)
+                        }*/
 
+            withContext(Dispatchers.Main) {
+                with(binding.rvMarvelChart) {
+                    this.adapter = rvAdapter;
+                    this.layoutManager = lmanager;
 
-            ) {sendMarvelItem(it)};
-
-            withContext(Dispatchers.Main){
-                with(binding.rvMarvelChart){
-                    this.adapter = rvAdapter
-                    this.layoutManager= LinearLayoutManager(
-                        requireActivity(),
-                        LinearLayoutManager.HORIZONTAL,
-                        false
-                    )
                 }
             }
-
         }
-
 
 
     }

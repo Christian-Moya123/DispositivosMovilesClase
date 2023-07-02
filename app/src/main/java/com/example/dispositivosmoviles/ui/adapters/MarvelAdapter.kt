@@ -9,11 +9,11 @@ import com.example.dispositivosmoviles.databinding.MarvelCharacterssBinding
 import com.example.dispositivosmoviles.ui.activities.entity.jkanmarvel.LoginMarvel
 import com.squareup.picasso.Picasso
 
-class MarvelAdapter (private val items: List<LoginMarvel>,
+class MarvelAdapter (
                      private var fnClick: (LoginMarvel) -> Unit
 ): RecyclerView.Adapter<MarvelAdapter.MarlverViewHolder>() {
 
-
+     var items: List<LoginMarvel> = listOf()
 
     class MarlverViewHolder(view: View): RecyclerView.ViewHolder(view){
 
@@ -56,6 +56,11 @@ class MarvelAdapter (private val items: List<LoginMarvel>,
     }
 
     override fun getItemCount(): Int =  items.size
+
+    fun  updateListitem( newItems: List<LoginMarvel>){
+        this.items =  this.items.plus(newItems)
+        notifyDataSetChanged()
+    }
 
 }
 
