@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:title="@string/InicioMenu"
-        android:id="@+id/inicio"
+    <item
+        android:id="@+id/menu_item_wifi"
         android:enabled="true"
-        android:visible="true"
-        android:icon="@drawable/home_48px" />
-
-    <item android:title="@string/FavoritosMenu"
-        android:id="@+id/fav"
+        android:icon="@drawable/baseline_wifi_24"
+        android:title="@string/menu_name_wifi"/>
+    <item
+        android:id="@+id/menu_item_bluetooth"
         android:enabled="true"
-        android:visible="true"
-        android:icon="@drawable/star_half_48px"/>
-
-    <item android:title="@string/AppMenu"
-        android:id="@+id/chat_got"
+        android:icon="@drawable/baseline_bluetooth_24"
+        android:title="@string/menu_name_bluetooth"/>
+    <item
+        android:id="@+id/menu_item_settings"
         android:enabled="true"
-        android:visible="true"
-        android:icon="@drawable/settings_48px"/>
+        android:icon="@drawable/baseline_settings_24"
+        android:title="@string/menu_name_settings"/>
+
 
 </menu>

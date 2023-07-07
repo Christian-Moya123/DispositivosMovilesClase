@@ -5,89 +5,98 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+
+        <item name="android:color">@color/title_color_dm</item>
+
+    </style>
+
+
     <style name="Theme.DispositivosMoviles" parent="Base.Theme.DispositivosMoviles">
-        <item name="android:fontFamily">@font/ibm_plex_mono_semibold </item>
-        <!--  <item name="android:backgroundTint">@color/dm</item> -->
-        <!--  <item name="android:textColor">@color/fuxia_cancel</item>-->
-         <item name="android:textSize">14sp</item>
 
-     </style>
+        <item name="android:fontFamily"> @font/roboto </item>
+        <item name="android:textColor"> @color/font_color_dm </item>
+        <item name="android:textSize"> 14sp </item>
 
-     <style name="texTitle">
-         <item name="android:textColor">@color/title_color_dm</item>
-         <item name="android:textSize">48sp</item>
-         <item name="android:fontFamily">@font/ibm_plex_mono_semibold</item>
-     </style>
+    </style>
 
-     <style name="bottonGeneral" >
-         <item name="android:textColor">@color/title_color_dm</item>
-         <item name="android:fontFamily">@font/orbitron</item>
-         <item name="android:backgroundTint"> @color/blue_acept</item>
-         <item name="android:textSize"> 12sp</item>
-         <item name="cornerRadius"> 8dp</item>
-
-     </style>
-
-     <style name="botton_cancel">
-         <item name="android:backgroundTint"> @color/fuxia_cancel</item>
+    <style name="textTitle">
+        <item name="android:fontFamily"> @font/roboto </item>
+        <item name="android:textColor">@color/purple</item>
+        <item name="android:textStyle"> bold </item>
+        <item name="android:textSize"> 30sp </item>
 
 
-     </style>
+    </style>
 
-     <style name="boton_opciones">
-         <item name="android:backgroundTint">@color/naranja</item>
+    <style name="ButtonsGeneral" >
+        <item name="android:textStyle"> bold </item>
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:textColor"> @color/white </item>
+        <item name  ="android:backgroundTint"> @color/title_color_dm </item>
+        <item name="cornerRadius">8dp</item>
+    </style>
 
-     </style>
+    <style name="ButtonFlat" >
+        <item name="android:textStyle"> bold </item>
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:backgroundTint"> @android:color/transparent</item>
+        <item name="android:textColor"> @color/principal_color_dm </item>
+        <item name="cornerRadius">8dp</item>
+    </style>
 
-     <style name="buscador1">
-         <item name="android:fontFamily">@font/orbitron</item>
-     </style>
+    <style name="ButtonTwitter" parent="ButtonsGeneral">
+        <item name  ="android:backgroundTint"> @color/twitter_color_dm </item>
+    </style>
 
-     <style name="textobuscar">
+    <style name="ButtonFacebook" parent="ButtonsGeneral">
+        <item name="android:backgroundTint"> @color/facebook_color_dm </item>
+        <item name="fontFamily"> @font/facebook</item>
+        <item name="android:textStyle"> normal </item>
+    </style>
 
-         <item name="android:fontFamily">@font/orbitron</item>
-         <item name="android:backgroundTint"> @color/white</item>
-     </style>
+    <style name="ButtonLogin" >
+        <item name="android:textStyle"> bold </item>
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:textColor"> @color/white </item>
+        <item name="android:backgroundTint"> @color/principal_color_dm </item>
+        <item name="cornerRadius">10dp</item>
 
-     <style name="bottonIngresar" >
-         <item name="android:textColor">@color/white</item>
-         <item name="android:backgroundTint"> @color/rojoBoton</item>
-         <item name="android:textSize"> 12sp</item>
-         <item name="cornerRadius"> 8dp</item>
+    </style>
 
-     </style>
+    <style name="bottonIngresar" >
+        <item name="android:textStyle"> bold </item>
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:textColor"> @color/white </item>
+        <item name="android:backgroundTint"> @color/principal_color_dm </item>
+        <item name="cornerRadius">10dp</item>
 
-     <style name="bottonRegistrarce" >
-         <item name="android:textColor">@color/rojoBoton</item>
-         <item name="android:backgroundTint"> @color/white</item>
-         <item name="android:textSize"> 12sp</item>
-         <item name="cornerRadius"> 8dp</item>
+    </style>
 
-     </style>
+    <style name="bottonRegistrarce" >
+        <item name="android:textStyle"> bold </item>
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:textColor"> @color/white </item>
+        <item name="android:backgroundTint"> @color/redmarvel </item>
+        <item name="cornerRadius">10dp</item>
 
-     <style name="bottonTwitter" >
-         <item name="android:textColor">@color/white</item>
-         <item name="android:backgroundTint"> @color/azulTwiter</item>
-         <item name="android:textSize"> 12sp</item>
-         <item name="cornerRadius"> 8dp</item>
-         <item name="android:layout_width"> 125dp</item>
-         <item name="android:layout_height"> 50dp</item>
+    </style>
 
+    <style name="bottonTwitter" >
+        <item name="android:textStyle"> bold </item>
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:textColor"> @color/white </item>
+        <item name="android:backgroundTint"> @color/azulmarvel </item>
+        <item name="cornerRadius">10dp</item>
 
-     </style>
+    </style>
 
-     <style name="bottonFace" >
-         <item name="android:textColor">@color/white</item>
-         <item name="android:backgroundTint"> @color/azulFace</item>
-         <item name="android:textSize"> 12sp</item>
-         <item name="cornerRadius"> 8dp</item>
-         <item name="android:layout_width"> 120dp</item>
-         <item name="android:layout_height"> 50dp</item>
-
-     </style>
-
-    <style name = "ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@color/azulTwiter </item>
+    <style name="bottonFace" >
+        <item name="android:textStyle"> bold </item>
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:textColor"> @color/white </item>
+        <item name="android:backgroundTint"> @color/blue </item>
+        <item name="cornerRadius">10dp</item>
 
     </style>
 
@@ -95,6 +104,4 @@
 
 
 
-
-
- </resources>
+</resources>
