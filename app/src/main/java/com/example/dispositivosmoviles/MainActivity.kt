@@ -6,13 +6,14 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.example.dispositivosmoviles.ui.utilities.DispositivosMoviles
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //R nos da acceso a todos los recursos que tenemos en la carpeta res
+
         setContentView(R.layout.activity_main)
 
         var button1 = findViewById<Button>(R.id.btnLogin)
@@ -40,7 +41,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+/*
+       val db =  DispositivosMoviles.getDbInstance()
+        db.marvelDao()
 
+ */
 
     }
 }

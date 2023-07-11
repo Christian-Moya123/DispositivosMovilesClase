@@ -18,6 +18,7 @@ import com.example.dispositivosmoviles.databinding.FragmentFirstBinding
 import com.example.dispositivosmoviles.logic.marvelLogic.MarvelLogic
 import com.example.dispositivosmoviles.ui.activities.DetailsMarvelItem
 import com.example.dispositivosmoviles.ui.adapters.MarvelAdapter
+import com.example.dispositivosmoviles.ui.utilities.DispositivosMoviles
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,7 +40,7 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
 
         binding = FragmentFirstBinding.inflate(
             layoutInflater, container, false
@@ -71,10 +72,10 @@ class FirstFragment : Fragment() {
         )
 
         binding.spinner.adapter = adapter1
-        chargeDataRV(5)
+        chargeDataRVDB(5)
 
         binding.rvSwipe.setOnRefreshListener {
-            chargeDataRV(5)
+            chargeDataRVDB(5)
             binding.rvSwipe.isRefreshing = false
             lManager.scrollToPositionWithOffset(5, 20)
         }
@@ -156,6 +157,46 @@ class FirstFragment : Fragment() {
                 gManager.scrollToPositionWithOffset(pos, 10)
             }
         }
+        page++
+    }
+
+    fun chargeDataRVDB(pos: Int) {
+
+        lifecycleScope.launch(Dispatchers.Main) {
+
+            marvelCharsItems = withContext(Dispatchers.IO) {
+
+                var items = MarvelLogic().
+                getAllMarvelCharDB().
+                toMutableList()
+
+            if(items.isEmpty()){
+                items  =  (MarvelLogic().
+                getAllMarvelChars(
+                        0, page * 3
+                    ))
+
+
+                MarvelLogic().insertMarvelCharstoDB(items)
+
+            }
+            return@withContext items
+        }
+
+        }
+            /*withContext(Dispatchers.IO){
+            }
+*/
+            rvAdapter.items = marvelCharsItems
+
+            binding.rvMarvelChars.apply {
+                this.adapter = rvAdapter;
+                this.layoutManager = gManager;
+
+
+                gManager.scrollToPositionWithOffset(pos, 10)
+            }
+
         page++
     }
 
