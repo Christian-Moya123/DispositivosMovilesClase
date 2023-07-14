@@ -19,7 +19,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="300px"
+            android:layout_height="350px"
             android:weightSum="2"
             android:background="@drawable/background_marvel">
 
@@ -60,6 +60,14 @@
                     android:textAlignment="viewStart">
 
                 </TextView>
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:drawableLeft="@drawable/baseline_heart_broken_24"
+                    android:text="Agregar"
+                    android:textSize="7dp" />
 
             </LinearLayout>
 

@@ -9,6 +9,7 @@ import com.example.dispositivosmoviles.data.entities.marvel.characters.getMarvel
 import com.example.dispositivosmoviles.logic.data.MarvelChars
 import com.example.dispositivosmoviles.logic.data.getMarvelCharsDB
 import com.example.dispositivosmoviles.ui.utilities.DispositivosMoviles
+import java.lang.RuntimeException
 
 class MarvelLogic {
 
@@ -76,6 +77,26 @@ class MarvelLogic {
         DispositivosMoviles.
         getDbInstance().
         marvelDao().insertMarvelCharacter(itemsDB)
+    }
+
+    suspend fun  getInitChars(limit: Int, offset: Int):MutableList<MarvelChars>{
+        var items = mutableListOf<MarvelChars>()
+        try{
+             items = MarvelLogic()
+                .getAllMarvelCharDB()
+                .toMutableList()
+
+            if(items.isEmpty()){
+                items = (MarvelLogic().getAllMarvelChars(
+                    offset = offset,limit
+                ))
+                MarvelLogic().insertMarvelCharstoDB(items)
+            }
+
+        }catch (ex: Exception){
+            throw RuntimeException(ex.message)
+        }
+        return items
     }
 
 }
