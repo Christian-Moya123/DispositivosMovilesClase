@@ -13,7 +13,9 @@ data class MarvelChars(
     val image: String
 ) : Parcelable
 
-fun MarvelChars.getMarvelCharsDB() : MarvelCharsDB{
+
+
+fun MarvelChars.getMarvelCharsDB() : MarvelCharsDB {
     return MarvelCharsDB(
         id,
         name,

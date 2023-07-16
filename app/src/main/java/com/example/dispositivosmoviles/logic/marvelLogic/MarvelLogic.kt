@@ -4,11 +4,14 @@ import android.util.Log
 import com.example.dispositivosmoviles.data.connections.ApiConnection
 import com.example.dispositivosmoviles.data.endpoints.MarvelEndpoint
 import com.example.dispositivosmoviles.data.entities.marvel.characters.database.MarvelCharsDB
-import com.example.dispositivosmoviles.data.entities.marvel.characters.database.getMarlChars
+import com.example.dispositivosmoviles.data.entities.marvel.characters.database.getMarvelChars
+
 import com.example.dispositivosmoviles.data.entities.marvel.characters.getMarvelChars
 import com.example.dispositivosmoviles.logic.data.MarvelChars
 import com.example.dispositivosmoviles.logic.data.getMarvelCharsDB
+
 import com.example.dispositivosmoviles.ui.utilities.DispositivosMoviles
+import kotlinx.coroutines.Dispatchers
 import java.lang.RuntimeException
 
 class MarvelLogic {
@@ -16,6 +19,7 @@ class MarvelLogic {
     suspend fun getMarvelChars(name: String, limit: Int): ArrayList<MarvelChars> {
 
         var itemList = arrayListOf<MarvelChars>()
+
         var response = ApiConnection.getService(
             ApiConnection.typeApi.Marvel,
             MarvelEndpoint::class.java
@@ -37,6 +41,7 @@ class MarvelLogic {
     suspend fun getAllMarvelChars(offset: Int, limit: Int): ArrayList<MarvelChars> {
 
         var itemList = arrayListOf<MarvelChars>()
+
         var response = ApiConnection.getService(
             ApiConnection.typeApi.Marvel,
             MarvelEndpoint::class.java
@@ -55,34 +60,34 @@ class MarvelLogic {
         return itemList
     }
 
-    suspend fun getAllMarvelCharDB() : List<MarvelChars>{
-        var items: ArrayList<MarvelChars> = arrayListOf()
+    suspend fun getAllMarvelCharDB() : List<MarvelChars> {
 
-       var items_aux = DispositivosMoviles.getDbInstance().marvelDao().getAllCharacters()
+
+        var items : ArrayList<MarvelChars> = arrayListOf()
+        val items_aux = DispositivosMoviles.getDbInstance().marvelDao().getAllCharacters()
         items_aux.forEach{
-            items.add(
-            it.getMarlChars()
-            )
+           items.add(it.getMarvelChars())
+
         }
 
         return items
     }
 
-    suspend fun  insertMarvelCharstoDB(items :List<MarvelChars>){
+    suspend fun insertMarvelCharstoDB(items:List<MarvelChars>){
         var itemsDB = arrayListOf<MarvelCharsDB>()
         items.forEach{
-         itemsDB.add(it.getMarvelCharsDB())
+              itemsDB.add(it.getMarvelCharsDB())
         }
 
-        DispositivosMoviles.
-        getDbInstance().
-        marvelDao().insertMarvelCharacter(itemsDB)
+        DispositivosMoviles.getDbInstance().
+        marvelDao().
+        insertMarvelCharacter(itemsDB)
     }
 
     suspend fun  getInitChars(limit: Int, offset: Int):MutableList<MarvelChars>{
         var items = mutableListOf<MarvelChars>()
         try{
-             items = MarvelLogic()
+            items = MarvelLogic()
                 .getAllMarvelCharDB()
                 .toMutableList()
 
