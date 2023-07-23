@@ -39,7 +39,7 @@ class SecondFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        // Inflate the layout for this fragment
         binding= FragmentSecondBinding.inflate(
             layoutInflater, container, false)
         lManager = LinearLayoutManager(
@@ -48,7 +48,7 @@ class SecondFragment : Fragment() {
             false
         )
 
-
+        //Dos por fila
         gManager = GridLayoutManager(requireActivity(), 2)
         return binding.root    }
 
@@ -68,15 +68,16 @@ class SecondFragment : Fragment() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (dy > 0) {
-                        val v = lManager.childCount
-                        val p = lManager.findFirstVisibleItemPosition()
-                        val t = lManager.itemCount
+                        val v = lManager.childCount//Cuantos han pasado
+                        val p = lManager.findFirstVisibleItemPosition()//Cual es mi posicion actual
+                        val t = lManager.itemCount//Cuantos tengo en total
+
                         if ((v + p) >= t) {
                             lifecycleScope.launch((Dispatchers.Main))
                             {
                                 val items = with(Dispatchers.IO) {
                                     MarvelLogic().getMarvelChars("spider", page * 3)
-
+                                    //JikanAnimeLogic().getAllAnimes()
                                 }
                                 rvAdapter.updateListAdapter((items))
 
@@ -119,10 +120,33 @@ class SecondFragment : Fragment() {
         return true
     }
 
+/*
+    //original
+    fun chargeDataRV(pos: Int) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            //rvAdapter.items = JikanAnimeLogic().getAllAnimes()
+            marvelCharsItems = withContext(Dispatchers.IO) {
+                return@withContext (MarvelLogic().getMarvelChars(
+                    "spider", page * 3
+                ))
+            }
+            rvAdapter.items = marvelCharsItems
+
+            binding.rvMarvelChars.apply {
+                this.adapter = rvAdapter;
+                this.layoutManager = lManager;
+
+
+                gManager.scrollToPositionWithOffset(pos, 10)
+            }
+        }
+        page++
+    }
+*/
 
     fun chargeDataRV(pos: Int) {
         lifecycleScope.launch(Dispatchers.Main) {
-
+            //rvAdapter.items = JikanAnimeLogic().getAllAnimes()
             marvelCharsItems = withContext(Dispatchers.IO) {
                 return@withContext (MarvelLogic().getMarvelChars(
                     "spider", page * 3

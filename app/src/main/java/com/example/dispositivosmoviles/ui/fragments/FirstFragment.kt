@@ -160,7 +160,7 @@ class FirstFragment : Fragment() {
     }
 
     fun sendMarvelItem(item: MarvelChars) {
-
+        //Intent(contexto de la activity, .class de la activity)
         val i = Intent(requireActivity(), DetailsMarvelItem::class.java)
         i.putExtra("item", item)//mandamos los items a la otra activity
         startActivity(i)
@@ -168,7 +168,7 @@ class FirstFragment : Fragment() {
 
 
         fun saveMarvelItem(item: MarvelChars) :Boolean{
-
+        //Intent(contexto de la activity, .class de la activity)
         lifecycleScope.launch(Dispatchers.Main){
             withContext(Dispatchers.IO){
                 DispositivosMoviles
