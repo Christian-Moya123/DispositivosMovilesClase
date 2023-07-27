@@ -27,13 +27,18 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.databinding.ActivityMainBinding
+import com.example.dispositivosmoviles.ui.utilities.MyLocationManager
 import com.example.dispositivosmoviles.ui.validator.LoginValidator
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.Priority
+import com.google.android.gms.location.SettingsClient
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,6 +56,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fusedLocationProviderClient : FusedLocationProviderClient
     private lateinit var locationRequest : LocationRequest
     private lateinit var locationCallback : LocationCallback
+    private lateinit var client: SettingsClient
+    private lateinit var locationSettingsRequest : LocationSettingsRequest
 
     private var currentLocation : Location? = null
 
@@ -101,19 +108,38 @@ class MainActivity : AppCompatActivity() {
             isGranted ->
         when(isGranted){
             true -> {
-                val task = fusedLocationProviderClient.lastLocation
-                task.addOnSuccessListener {
-                        location ->
+                client.checkLocationSettings(locationSettingsRequest).apply {
+                    //si el GPs esta funcionando:
+                    addOnSuccessListener {
+                        val task = fusedLocationProviderClient.lastLocation
+                        task.addOnSuccessListener {
+                                location ->
 
-                    fusedLocationProviderClient.requestLocationUpdates(
-                        locationRequest, //tipo ubicacion, tiempo
-                        locationCallback, //resultado
-                        Looper.getMainLooper() //loop
-                    )
+                            fusedLocationProviderClient.requestLocationUpdates(
+                                locationRequest, //tipo ubicacion, tiempo
+                                locationCallback, //resultado
+                                Looper.getMainLooper() //loop
+                            )
+                        }
+                    }
+
+                    //si el GPS falla
+                    addOnFailureListener {
+                            ex ->
+                        //si es una excepcion que la API puede solucionar
+                        if(ex is ResolvableApiException) {
+                            //lanza alert dialog listo para habilitar el GPS
+                            ex.startResolutionForResult(
+                                this@MainActivity,
+                                LocationSettingsStatusCodes.RESOLUTION_REQUIRED
+                            )
+                        }
+                    }
+
                 }
 
                 //cuando falla
-                task.addOnFailureListener{
+               /* task.addOnFailureListener{
                     val alert = AlertDialog.Builder(this)
                     alert.apply {
                         setTitle("Alerta")
@@ -127,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                         setCancelable(false) //no puede tocar fuera el dialog hasta que toque alguna opcion
                     }.create()
                     alert.show()
-                }
+                }*/
 
             }
 
@@ -156,7 +182,7 @@ class MainActivity : AppCompatActivity() {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY, 2000
+            Priority.PRIORITY_HIGH_ACCURACY, 1000
         )
             //.setMaxUpdates(3) //cuantas veces se va a pedir la actu
             .build() //exactitud de ubicacion y tiempo en ms
@@ -177,12 +203,19 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+        client = LocationServices.getSettingsClient(this)
+        locationSettingsRequest = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest).build()
+
     }
 
     override fun onStart() {
         super.onStart()
         initClass()
     }
+
+    //Inyeccion de dependencias
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -301,6 +334,11 @@ class MainActivity : AppCompatActivity() {
             prefs[stringPreferencesKey("session")] = java.util.UUID.randomUUID().toString()
             prefs[stringPreferencesKey("email")] = "dispositivosmoviles@uce.edu.ec"
         }
+    }
+
+    private fun test(){
+        var location = MyLocationManager(this)
+        location.getUserLocation()
     }
 
 }
