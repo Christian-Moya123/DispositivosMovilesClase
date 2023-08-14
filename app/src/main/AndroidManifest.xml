@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- ubicacion general -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:name=".ui.utilities.DispositivosMoviles"
@@ -21,9 +21,17 @@
         android:theme="@style/Theme.DispositivosMoviles"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.activities.PogressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.NotificacionActivity"
+            android:exported="false" />
 
-        <receiver android:name=".ui.utilities.BroadCasterNotifications"
-            android:enabled="true"/>
+        <receiver
+            android:name=".ui.utilities.BroadCasterNotifications"
+            android:enabled="true" />
+
         <activity
             android:name=".ui.activities.CamaraActivity"
             android:exported="false" />
@@ -37,10 +45,10 @@
             android:name=".ui.activities.DetailsMarvelItem"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.activities.BiometricActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.NotificacionActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
