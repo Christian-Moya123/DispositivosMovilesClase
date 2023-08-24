@@ -1,82 +1,88 @@
 package com.example.dispositivosmoviles.ui.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
+
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.databinding.ActivityBiometricBinding
+import com.example.dispositivosmoviles.ui.viewmodels.BiometricViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import com.example.dispositivosmoviles.ui.viewmodels.BiometricViewModel
 
 class BiometricActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityBiometricBinding
-    private val biometricViewModel by viewModels<BiometricViewModel>()
+    private lateinit var binding: ActivityBiometricBinding
 
+    private val biometricViewModel by viewModels<BiometricViewModel>()
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBiometricBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.btnAutentication.setOnClickListener {
-            //autenticateBiometric()
-            lifecycleScope.launch {
-                biometricViewModel.chargingData()
-            }
+            autenticateBiometric()
         }
 
-        // Cuando hay un cambio en isLoading, se ejecuta el observe
-        biometricViewModel.isLoading.observe(this) {
-                isLoading ->
-            if(isLoading) {
+        biometricViewModel.isLoading.observe(this){
+            isLoading ->
+
+            if(isLoading){
                 binding.layoutMain.visibility = View.GONE
                 binding.layoutMainCopia.visibility = View.VISIBLE
-            } else {
+            }else{
                 binding.layoutMain.visibility = View.VISIBLE
                 binding.layoutMainCopia.visibility = View.GONE
             }
+
+
         }
 
         lifecycleScope.launch {
             biometricViewModel.chargingData()
         }
+
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun autenticateBiometric() {
 
-        if(checkBiometric()) {
+        if (checkBiometric()) {
             val executor = ContextCompat.getMainExecutor(this)
 
             val biometricPrompt = BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Autenticación requerida")
+                .setTitle("Autenticacion requerida")
                 .setSubtitle("Ingrese su huella digital")
-                .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
-                .setNegativeButtonText("Cancelar")
+                .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
                 .build()
 
-            val biometricManager = BiometricPrompt(
-                this,
-                executor,
+            //Ejecutor: para lanzar cosas del sistema
+            val biometricManager = BiometricPrompt(this, executor,
                 object : BiometricPrompt.AuthenticationCallback() {
+                    override fun equals(other: Any?): Boolean {
+                        return super.equals(other)
+                    }
+
                     override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                         super.onAuthenticationError(errorCode, errString)
                     }
 
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                         super.onAuthenticationSucceeded(result)
-                        startActivity(Intent(
-                            this@BiometricActivity,
-                            CamaraActivity::class.java))
+                        val miIntent = Intent(this@BiometricActivity,PrincipalActivity::class.java)
+                        startActivity(miIntent)
                     }
 
                     override fun onAuthenticationFailed() {
@@ -85,41 +91,47 @@ class BiometricActivity : AppCompatActivity() {
                 })
             biometricManager.authenticate(biometricPrompt)
         } else {
+            val miIntent = Intent(this@BiometricActivity,PrincipalActivity::class.java)
+            startActivity(miIntent)
             Snackbar.make(
                 binding.btnAutentication,
                 "No existen los requisitos necesarios",
-                Snackbar.LENGTH_LONG).show()
+                Snackbar.LENGTH_LONG
+            )
+                .show()
         }
     }
 
-    private fun checkBiometric() : Boolean {
-        var returnValid : Boolean = false
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun checkBiometric(): Boolean {
+        var returnValid: Boolean = false
         val biometricManager = BiometricManager.from(this)
-
-        when(biometricManager.canAuthenticate(
-            BIOMETRIC_STRONG //or DEVICE_CREDENTIAL
-        )) {
-            //hay hw y huella
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
+                Log.d("MY_APP_TAG", "App can authenticate using biometrics.")
                 returnValid = true
             }
-            // no hay hw
+
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                Log.e("MY_APP_TAG", "No biometric features available on this device.")
                 returnValid = false
             }
-            // hay problema con el hw
+
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                Log.e("MY_APP_TAG", "Biometric features are currently unavailable.")
                 returnValid = false
             }
-            // hay hw pero no huella
+
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                val intentPrompt = Intent(Settings.ACTION_BIOMETRIC_ENROLL) // intent implicito: solicita a alguien que dé haciendo algo, no tiene punto de llegada, solo de salida
-                intentPrompt.putExtra(
-                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                    BIOMETRIC_STRONG or DEVICE_CREDENTIAL
-                )
-                startActivity(intentPrompt)
-                returnValid = true
+                // Prompts the user to create credentials that your app accepts.
+                val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                    putExtra(
+                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                        BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+                    )
+                }
+                startActivity(enrollIntent)
+                returnValid = false
             }
         }
         return returnValid

@@ -11,6 +11,11 @@
 
     </style>
 
+    <style name="Transition1">
+        <item name="android:windowEnterTransition">@android:transition/fade</item>
+        <item name="android:windowExitTransition">@android:transition/fade</item>
+    </style>
+
 
     <style name="Theme.DispositivosMoviles" parent="Base.Theme.DispositivosMoviles">
 
@@ -22,18 +27,25 @@
 
     <style name="textTitle">
         <item name="android:fontFamily"> @font/roboto </item>
-        <item name="android:textColor">@color/purple</item>
+        <item name="android:textColor">@color/azul</item>
         <item name="android:textStyle"> bold </item>
-        <item name="android:textSize"> 30sp </item>
+        <item name="android:textSize"> 50sp </item>
 
 
+    </style>
+
+    <style name="textDESCRIPCION">
+        <item name="android:fontFamily">@font/alata</item>
+        <item name="android:textColor">@color/redmarvel</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">40sp</item>
     </style>
 
     <style name="ButtonsGeneral" >
         <item name="android:textStyle"> bold </item>
         <item name="android:textSize"> 12sp </item>
         <item name="android:textColor"> @color/white </item>
-        <item name  ="android:backgroundTint"> @color/title_color_dm </item>
+        <item name  ="android:backgroundTint"> @color/facebook_color_dm </item>
         <item name="cornerRadius">8dp</item>
     </style>
 

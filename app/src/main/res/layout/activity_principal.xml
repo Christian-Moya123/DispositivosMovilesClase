@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/tres_horoes"
     tools:context=".ui.activities.PrincipalActivity">
-
 
     <TextView
         android:id="@+id/txtTitle"
@@ -16,25 +17,82 @@
         android:fontFamily="@font/roboto_light"
         android:text="Bienvenido"
         android:textAlignment="center"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="20dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnRetorno"
-        style="@style/ButtonsGeneral"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="104dp"
-        android:text="Soy un botón"
+    <TextView
+        android:id="@+id/txtdes"
+        style="@style/textDESCRIPCION"
+        android:layout_width="371dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/roboto_light"
+        android:text="Elige qué actividad deseas realizar"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/btnProgreso"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+
+    <Button
+        android:id="@+id/btnCamara"
+        style="@style/ButtonsGeneral"
+        android:layout_width="164dp"
+        android:layout_height="51dp"
+        android:text="CÁMARA"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnNotificacion"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+
+    <Button
+        android:id="@+id/btnNotificacion"
+        style="@style/ButtonsGeneral"
+        android:layout_width="164dp"
+        android:layout_height="51dp"
+        android:text="RELOJ"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnCamara"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+
+
+    <Button
+        android:id="@+id/btnProgreso"
+        style="@style/ButtonsGeneral"
+        android:layout_width="164dp"
+        android:layout_height="51dp"
+        android:text="PROGRESO"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnMeme"
+        app:layout_constraintTop_toBottomOf="@+id/txtdes" />
+
+    <Button
+        android:id="@+id/btnMeme"
+        style="@style/ButtonsGeneral"
+        android:layout_width="164dp"
+        android:layout_height="51dp"
+        android:text="MEMES"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnProgreso"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtdes" />
+
 
 
     <FrameLayout
         android:id="@+id/frm_containter"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-46dp">
+
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/frm_containter2"
@@ -42,17 +100,16 @@
         android:layout_height="299dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRetorno" />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+        style="@style/textDESCRIPCION"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:itemIconTint="@drawable/icon_selected"
         app:itemActiveIndicatorStyle="@style/ActiveIndicator"
         app:menu="@menu/bottom_navigation_menu"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

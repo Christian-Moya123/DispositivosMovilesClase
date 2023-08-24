@@ -22,24 +22,30 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.PogressActivity"
+            android:name=".ui.activities.MemeActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.NotificacionActivity"
-            android:exported="false" />
-
-        <receiver
-            android:name=".ui.utilities.BroadCasterNotifications"
-            android:enabled="true" />
-
-        <activity
-            android:name=".ui.activities.CamaraActivity"
+            android:name=".ui.activities.ProgressActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.PrincipalActivity"
+            android:name=".ui.activities.GptActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.ResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.NotificationActivity"
+            android:exported="false" />
+
+        <receiver
+            android:name=".ui.utilities.BroadcasterNotifications"
+            android:enabled="true" />
+
+        <activity
+            android:name=".ui.activities.CameraActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.PrincipalActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.DetailsMarvelItem"

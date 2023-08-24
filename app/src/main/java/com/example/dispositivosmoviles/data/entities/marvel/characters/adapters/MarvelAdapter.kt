@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.logic.data.MarvelChars
 import com.example.dispositivosmoviles.databinding.MarvelCharactersBinding
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
 class MarvelAdapter(
@@ -34,10 +35,24 @@ class MarvelAdapter(
                 fnClick(item)
             }
             binding.btnSave.setOnClickListener {
-                fnSave(item)
+                var chechkInsert:Boolean = false
+                chechkInsert  = fnSave(item)
+                if(chechkInsert){
+                    Snackbar.make(
+                        binding.imgImage,
+                        "se agrego a favoritos",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }else{
+                    Snackbar.make(
+                        binding.imgImage,
+                        "no se puede agregar",
+                        Snackbar.LENGTH_LONG
+
+                    ).show()
             }
         }
-
+        }
 
     }
 

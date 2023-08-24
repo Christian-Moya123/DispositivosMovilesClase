@@ -1,35 +1,32 @@
 package com.example.dispositivosmoviles.ui.activities
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.location.Geocoder
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.PermissionChecker.PermissionResult
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.dispositivosmoviles.R
 import com.example.dispositivosmoviles.databinding.ActivityMainBinding
+import com.example.dispositivosmoviles.logic.validator.LoginValidator
+import com.example.dispositivosmoviles.ui.utilities.DispositivosMoviles
 import com.example.dispositivosmoviles.ui.utilities.MyLocationManager
-import com.example.dispositivosmoviles.ui.validator.LoginValidator
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -50,193 +47,181 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import java.util.UUID
 
+
 // At the top level of your kotlin file:
 val Context.dataStore: DataStore<Preferences>
         by preferencesDataStore(name = "settings")
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    //Authentication Firebase
     private lateinit var auth: FirebaseAuth
-    private var TAG = "UCE"
-    //interfaz que nos va a permitir acceder a la ubicacion del ususario
-    private lateinit var fusedLocationProviderClient : FusedLocationProviderClient
-    private lateinit var locationRequest : LocationRequest
-    private lateinit var locationCallback : LocationCallback
-    private lateinit var client: SettingsClient
-    private lateinit var locationSettingsRequest : LocationSettingsRequest
+    private var TAG = Constants.TAG
 
-    private var currentLocation : Location? = null
+    //Ubicacion y GPS
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
 
-    private val speechToText = registerForActivityResult(StartActivityForResult()){
-            activityResult ->
 
-        val sn = Snackbar.make(
-            binding.txtName,
-            "",
-            Snackbar.LENGTH_LONG
-        )
+    private lateinit var client : SettingsClient
+    private lateinit var locationSettingRequest:LocationSettingsRequest
 
-        var message = ""
+    private var currentLocation: Location? = null
+    private val speechToText =
+        registerForActivityResult(StartActivityForResult()) { activityResult ->
+            var color = resources.getColor(R.color.blue)
+            var msg = ""
+            when (activityResult.resultCode) {
+                RESULT_OK -> {
+                    msg = activityResult
+                        .data
+                        ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                        ?.get(0)
+                        .toString()
+                    if (msg.isNotEmpty()) {
+                        val intent = Intent(Intent.ACTION_WEB_SEARCH)
+                    }
 
-        when(activityResult.resultCode){
-            RESULT_OK -> {
-                val msg = activityResult.
-                data?.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS
-                )?.get(0).toString()
-
-                if(msg.isNotEmpty()){
-                    val intent = Intent(
-                        Intent.ACTION_WEB_SEARCH
-                    )
                     intent.setClassName(
                         "com.google.android.googlequicksearchbox",
                         "com.google.android.googlequicksearchbox.SearchActivity"
                     )
                     intent.putExtra(SearchManager.QUERY, msg)
+
                     startActivity(intent)
                 }
-            }
-            RESULT_CANCELED -> {
-                message = "Proceso cancelado"
-                sn.setBackgroundTint(resources.getColor(R.color.red))
-            }
-            else -> {
-                "Ocurrio un error"
-                sn.setBackgroundTint(resources.getColor(R.color.red))
+
+                RESULT_CANCELED -> {
+                    msg = "Proceso Cancelado"
+                    color = resources.getColor(R.color.orange)
+                }
+
+                else -> {
+                    msg = "Ocurrio un error"
+                    color = resources.getColor(R.color.red)
+                }
             }
 
+            val sn = Snackbar.make(binding.btnFacebook, msg, Snackbar.LENGTH_LONG)
+            sn.setBackgroundTint(color)
+            sn.show()
         }
-    }
 
     @SuppressLint("MissingPermission")
-    private val locationContract = registerForActivityResult(RequestPermission()) {
-            isGranted ->
-        when(isGranted){
-            true -> {
-                client.checkLocationSettings(locationSettingsRequest).apply {
-                    //si el GPs esta funcionando:
-                    addOnSuccessListener {
+    private val locationContract = registerForActivityResult(RequestPermission()) { isGranted ->
+        when (isGranted) {
+            true ->{
+                client.checkLocationSettings(locationSettingRequest).apply {
+                    addOnSuccessListener{
                         val task = fusedLocationProviderClient.lastLocation
-                        task.addOnSuccessListener {
-                                location ->
-
+                        task.addOnSuccessListener { location ->
                             fusedLocationProviderClient.requestLocationUpdates(
-                                locationRequest, //tipo ubicacion, tiempo
-                                locationCallback, //resultado
-                                Looper.getMainLooper() //loop
+                                locationRequest,
+                                locationCallback,
+                                Looper.getMainLooper()
                             )
-                        }
                     }
 
-                    //si el GPS falla
-                    addOnFailureListener {
-                            ex ->
-                        //si es una excepcion que la API puede solucionar
-                        if(ex is ResolvableApiException) {
-                            //lanza alert dialog listo para habilitar el GPS
+                }
+                    addOnFailureListener{ex ->
+                        if (ex is ResolvableApiException){
+                            //Para que abra las configuraciones de idioma
+                            //
+                            //startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+
                             ex.startResolutionForResult(
                                 this@MainActivity,
                                 LocationSettingsStatusCodes.RESOLUTION_REQUIRED
                             )
-                        }
-                    }
 
+                        }
+
+                    }
                 }
 
-                //cuando falla
-               /* task.addOnFailureListener{
-                    val alert = AlertDialog.Builder(this)
-                    alert.apply {
-                        setTitle("Alerta")
-                        setMessage("Existe un problema con el sistema de posicionamiento global en el sistema")
-                        setPositiveButton("Ok") {dialog, id ->
-                            dialog.dismiss()
-                        }
-                        setNegativeButton("Cancelar") {dialog, id ->
-                            dialog.dismiss()
-                        }
-                        setCancelable(false) //no puede tocar fuera el dialog hasta que toque alguna opcion
-                    }.create()
-                    alert.show()
-                }*/
-
             }
 
-            //Informa al usuario de porque se necesita los permisos
+
             shouldShowRequestPermissionRationale(
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) -> {
-                Snackbar.make(binding.txtName,
-                    "Ayude con el permiso",
-                    Snackbar.LENGTH_LONG)
-                    .show()
-            }
-            false -> {
-                Snackbar.make(binding.txtName, "Permiso denegado", Snackbar.LENGTH_LONG)
-                    .show()
-            }
-        }
 
+            }
+
+            false -> {
+
+            }
+
+        }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Los botones con binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        auth = Firebase.auth
-
-        binding.btnLogin.setOnClickListener {
-            authWithFirebaseEmail(
-                binding.txtEmail.text.toString(),
-                binding.txtPassword.text.toString()
-            )
-        }
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY, 1000
+            Priority.PRIORITY_HIGH_ACCURACY,
+            2000
         )
-            //.setMaxUpdates(3) //cuantas veces se va a pedir la actu
-            .build() //exactitud de ubicacion y tiempo en ms
+            //.setMaxUpdates(3)
+            .build()
+
         locationCallback = object : LocationCallback() {
-            //Ctrl + O, override
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-
-                if(locationResult != null){
-                    locationResult.locations.forEach{
-                            location ->
-                        currentLocation = location
-                        Log.d("UCE",
+                if (locationResult !== null) {
+                    locationResult.locations.forEach { location ->
+                        Log.d(
+                            "UCE",
                             "Ubicacion: ${location.latitude}, " +
-                                    "${location.longitude}")
+                                    "${location.longitude}"
+                        )
                     }
                 }
-
             }
         }
+
         client = LocationServices.getSettingsClient(this)
-        locationSettingsRequest = LocationSettingsRequest.Builder()
+        locationSettingRequest = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest).build()
 
+
+        auth = Firebase.auth
+        binding.btnSignup.setOnClickListener {
+            //signInWithEmailAndPassword(binding.txtEmail.text.toString(), binding.txtPassword.text.toString())
+
+            authWithFirebaseEmail(binding.txtName.text.toString(),
+
+                binding.txtPass.text.toString())
+        }
+
+        binding.btnLogin.setOnClickListener {
+            signInWithEmailAndPassword(binding.txtName.text.toString(), binding.txtPass.text.toString())
+
+        }
     }
 
+    //Crea el usuario y el password
+    private fun authWithFirebaseEmail(email : String, password : String) {
+        Log.d(TAG, "Attempting to sign in with email: $email")
 
-    // Guarda el usuario
-    private fun authWithFirebaseEmail(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
+                //Una task es una corrutina que inicia con un invocador
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(Constants.TAG, "createUserWithEmail:success")
                     val user = auth.currentUser
+                    //updateUI(user)
                     Toast.makeText(
                         baseContext,
-                        "Authentication successful.",
+                        "Authentication successfull.",
                         Toast.LENGTH_SHORT,
                     ).show()
                 } else {
@@ -247,19 +232,23 @@ class MainActivity : AppCompatActivity() {
                         "Authentication failed.",
                         Toast.LENGTH_SHORT,
                     ).show()
+                    //updateUI(null)
                 }
             }
     }
 
-    // Inicia sesion
-    private fun signInWithEmailAndPassword(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
+    //Iniciar Sesion
+    private fun signInWithEmailAndPassword(email2: String, password: String){
+        Log.d(TAG, "Attempting to sign in with email: $email2")
+
+        auth.signInWithEmailAndPassword(email2, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
                     val user = auth.currentUser
                     startActivity(Intent(this, BiometricActivity::class.java))
+                    //updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
@@ -268,163 +257,181 @@ class MainActivity : AppCompatActivity() {
                         "Authentication failed.",
                         Toast.LENGTH_SHORT,
                     ).show()
+                    //updateUI(null)
                 }
             }
     }
 
-    private fun recoveryPasswordWithEmail(email: String) {
+    private fun recoveryPasswordWithEmail(email : String){
         auth.sendPasswordResetEmail(email)
-            .addOnCompleteListener {
-                    task ->
-                if(task.isSuccessful) {
+            .addOnCompleteListener {task ->
+            if (task.isSuccessful){
+                Toast.makeText(
+                    baseContext,
+                    "Correo de recuperacion enviado correctamente.",
+                    Toast.LENGTH_SHORT,
+                ).show()
 
-                    Toast.makeText(
-                        this,
-                        "Correo de recuperacion enviado correctamente",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                MaterialAlertDialogBuilder(this).apply {
+                    setTitle("Alert")
+                    setMessage("Correo de recuperacion enviado correctamente")
+                    setCancelable(true)
+                }.show()
+            }else{
 
-                    MaterialAlertDialogBuilder(this).apply {
-                        setTitle("Alerta")
-                        setMessage("Correo de recuperacion enviado correctamente")
-                        setCancelable(true)
-                    }.show()
-                }
             }
+
+        }
     }
-
-
-
-    override fun onStart() {
-        super.onStart()
-        //initClass()
-    }
-
-    //Inyeccion de dependencias
-
-
     override fun onDestroy() {
         super.onDestroy()
     }
 
-    override fun onPause() {
-        super.onPause()
-        //Para detener la obtencion de ubicacion al cambiar de activity
-        fusedLocationProviderClient.removeLocationUpdates(
-            locationCallback)
-    }
-
     private fun initClass() {
-        binding.btnLogin.setOnClickListener {
+//        binding.btnLogin.setOnClickListener {
+//
+//            val check = LoginValidator().checkLogin(
+//                binding.txtName.text.toString(), binding.txtPass.text.toString()
+//            )
+//
+//            if (check) {
+//                lifecycleScope.launch(Dispatchers.IO) {
+//                    saveDataStore(binding.txtName.text.toString())
+//                }
+//
+//                var intent = Intent(this, PrincipalActivity::class.java)
+//                intent.putExtra("var1", binding.txtName.text.toString())
+//                intent.putExtra("var2", 2)
+//                startActivity(intent)
+//            } else {
+//                var snackbar = Snackbar.make(
+//                    binding.txtTitle,
+//                    "Usuario o contraseña inválidos",
+//                    Snackbar.LENGTH_LONG
+//                )
+//                //snackbar.setBackgroundTint(ContextCompat.getColor(binding.root.context, R.color.principal_color_dm))
+//                snackbar.setBackgroundTint(getResources().getColor(R.color.black))
+//                snackbar.show()
+//            }
+//        }
 
-            val check = LoginValidator().checkLogin(
-                binding.txtName.text.toString(), binding.txtPass.text.toString()
+
+        binding.btnFacebook.setOnClickListener {
+            /*
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("tel:099876543")
+                //Uri.parse("geo:-0.2006288,-78.5023889")
             )
+*/
+            fusedLocationProviderClient.removeLocationUpdates(
+                locationCallback
+            )
+            //EÑ EL FINE ME DA LAS CORDENAS DE DONDE SE ENCUENTRA MI CELULAR
+            locationContract.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+//          ESTE SIRVE PRA EL BUSCADOR EN GOOGLE
+            //            val intent = Intent(Intent.ACTION_WEB_SEARCH)
+//            intent.setClassName(
+//                "com.google.android.googlequicksearchbox",
+//                "com.google.android.googlequicksearchbox.SearchActivity"
+//            )
+//            intent.putExtra(SearchManager.QUERY, "google.com")
+//
+//            startActivity(intent)
+        }
 
-            if(check){
-                lifecycleScope.launch(Dispatchers.IO){
-                    saveDataStore(binding.txtName.text.toString())
+        val appResultLocal = registerForActivityResult(
+            StartActivityForResult()
+        ) { resultActivity ->
+
+            var color = resources.getColor(R.color.black)
+            var message = when (resultActivity.resultCode) {
+                RESULT_OK -> {
+                    color = resources.getColor(R.color.blue)
+                    "Resultado Exitoso"
+                    resultActivity.data?.getStringExtra("result").orEmpty()
+
                 }
 
-                //Intent explicito
-                var intent = Intent(this, PrincipalActivity::class.java)
+                RESULT_CANCELED -> {
+                    color = resources.getColor(R.color.red)
+                    "Resultado Fallido"
+                    resultActivity.data?.getStringExtra("result").orEmpty()
 
-                intent.putExtra("var1", binding.txtName.text.toString())
-                intent.putExtra("var2", 2)
-                startActivity(intent)
-            }else{
-                var snackbar = Snackbar.make(binding.btnSignup,
-                    "Usuario o contraseña inválidos",
-                    Snackbar.LENGTH_LONG)
-                //snackbar.setBackgroundTint(ContextCompat.getColor(binding.root.context, R.color.principal_color_dm))
-                snackbar.setBackgroundTint(getResources().getColor(R.color.black))
-                snackbar.show()
+                }
+
+                else -> {
+                    "Resultado Dudoso"
+                }
             }
+
+            val sn = Snackbar.make(binding.btnFacebook, message, Snackbar.LENGTH_LONG)
+            sn.setBackgroundTint(color)
+            sn.show()
+
         }
 
 
 
         binding.btnTwitter.setOnClickListener {
-
-            locationContract.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-
-            /*val intent = Intent(
-                Intent.ACTION_WEB_SEARCH
-            )
-            //abre la barra de busqueda de Google
-            intent.setClassName(
-                "com.google.android.googlequicksearchbox",
-                "com.google.android.googlequicksearchbox.SearchActivity"
-            )
-            //busca steam en el navegador
-            intent.putExtra(SearchManager.QUERY, "steam")
-            startActivity(intent)*/
-        }
-
-        val appResultLocal = registerForActivityResult(StartActivityForResult()) {
-                resultActivity ->
-
-            val sn = Snackbar.make(
-                binding.txtName,
-                "",
-                Snackbar.LENGTH_LONG
-            )
-
-            //contrato con las clausulas a ejecutar
-            var message = when(resultActivity.resultCode) {
-                RESULT_OK -> {
-                    sn.setBackgroundTint(resources.getColor(R.color.blue))
-                    resultActivity.data?.getStringExtra("result")
-                        .orEmpty() //si no hay nada, devuelve vacio
-                }
-                RESULT_CANCELED -> {
-                    sn.setBackgroundTint(resources.getColor(R.color.red))
-                    resultActivity.data?.getStringExtra("result")
-                        .orEmpty()
-                }
-                else -> {
-                    "Dudoso"
-                }
-            }
-            sn.setText(message)
-            sn.show()
-        }
-
-        binding.btnFacebook.setOnClickListener {
+            //val resIntent = Intent(this, ResultActivity::class.java)
+            //appResultLocal.launch(resIntent)
 
             val intentSpeech = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             intentSpeech.putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM //modelo de lenguaje libre
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
             )
             intentSpeech.putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE, //en que idioma va a hablar
-                Locale.getDefault() //toma el lenguaje del dispositivo
+                RecognizerIntent.EXTRA_LANGUAGE,
+                Locale.getDefault()
             )
             intentSpeech.putExtra(
                 RecognizerIntent.EXTRA_PROMPT,
-                "Di algo..."
+                "Di algo pe ctm..."
             )
-            speechToText.launch(intentSpeech)
 
-            /*val resIntent = Intent(this, ResultActivity::class.java)
-            appResultLocal.launch(resIntent)*/
+            speechToText.launch(intentSpeech)
         }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        fusedLocationProviderClient.removeLocationUpdates(
+            locationCallback
+        )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initClass()
+//Cuando instancio accedo a lo que esta dentro de la clase
+        //Cuando no instancio accedo a lo que tiene dentro del companion object
+        val db = DispositivosMoviles.getDbInstance()
 
     }
 
     private suspend fun saveDataStore(stringData: String) {
-        dataStore.edit{ prefs ->
+        dataStore.edit { prefs ->
             prefs[stringPreferencesKey("usuario")] = stringData
-            //UUID: Universal Unique Identifier
-            prefs[stringPreferencesKey("session")] = java.util.UUID.randomUUID().toString()
+            prefs[stringPreferencesKey("session")] = UUID.randomUUID().toString()
             prefs[stringPreferencesKey("email")] = "dispositivosmoviles@uce.edu.ec"
+
         }
     }
 
     private fun test(){
-        var location = MyLocationManager(this)
+        //INYECCION DE DEPENDENCIAS
+        var location =  MyLocationManager(this)
         location.getUserLocation()
     }
+
+    fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frm_container3, fragment)
+            .commit()
+    }
+
 
 }

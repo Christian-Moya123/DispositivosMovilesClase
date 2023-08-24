@@ -5,13 +5,33 @@
     android:layout_height="match_parent"
     android:layout_margin="14dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/color_fondo_naranja"
    tools:context=".ui.fragments.ThirdFragment">
+
+    <FrameLayout
+        android:id="@+id/frm_container3"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" >
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="wrap_content"
+            android:layout_height="343dp"
+
+            android:src="@drawable/mask_ironman" />
+    </FrameLayout>
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="294dp"
         android:layout_height="257dp"
         android:layout_margin="35dp"
-        android:backgroundTint="@color/cardview_dark_background"
+        android:backgroundTint="@color/orange"
         android:elevation="10dp"
         app:cardCornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,24 +40,30 @@
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <pl.droidsonroids.gif.GifImageView
-            android:layout_width="294dp"
-            android:layout_height="282dp"
-
-            android:src="@drawable/tuercas" />
-
         <TextView
             android:layout_width="265dp"
-            android:layout_height="87dp"
+            android:layout_height="99dp"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="120dp"
             android:fontFamily="@font/anton"
-            android:text="SOY OTRO FRAGMENT"
+            android:text="Estas seguro de que quieres salir"
             android:textAlignment="center"
+            android:background="@color/red"
             android:textColor="@color/white"
             android:textSize="30dp">
 
         </TextView>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="265dp"
+            android:layout_height="87dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/anton"
+            android:textAlignment="center"
+            android:textSize="40sp"
+            android:text="Salir" />
 
     </androidx.cardview.widget.CardView>
 
